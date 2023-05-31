@@ -76,3 +76,54 @@ checks.push({
     return res;
   },
 });
+
+checks.push({
+  name: 'Body Size',
+  category: 'SEO',
+  exec: (doc) => {
+    const res = {
+      status: true,
+      msg: 'Body size is good.',
+    };
+    const bodySize = doc.documentElement.innerText.replace(/\s/g, '').length;
+    if (bodySize > 200) {
+      res.status = false;
+      res.msg = 'Body content has a good length. 200 characters';
+    } else {
+      res.status = false;
+      res.msg = 'Body does not have enough content.';
+    }
+
+    return res;
+  },
+});
+
+checks.push({
+  name: 'Links',
+  category: 'SEO',
+  exec: async (doc) => {
+    const res = {
+      status: true,
+      msg: 'Body size is good.',
+    };
+    const links = doc.querySelectorAll('a[href^="/"]');
+
+    let badLink;
+    // eslint-disable-next-line no-restricted-syntax
+    for (const link of links) {
+      // eslint-disable-next-line no-await-in-loop
+      const resp = await fetch(link.href, { method: 'HEAD' });
+      if (!resp.ok) badLink = true;
+    }
+
+    if (badLink) {
+      res.status = false;
+      res.msg = 'There are one or more broken links.';
+    } else {
+      res.status = true;
+      res.msg = 'Links are valid.';
+    }
+
+    return res;
+  },
+});
