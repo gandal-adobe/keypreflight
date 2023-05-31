@@ -49,3 +49,30 @@ checks.push({
     return res;
   },
 });
+
+checks.push({
+  name: 'Meta Description',
+  category: 'SEO',
+  exec: (doc) => {
+    const res = {
+      status: true,
+      msg: 'Meta description size is good.',
+    };
+    const metaDesc = doc.querySelector('meta[name="description"]');
+    if (!metaDesc) {
+      res.status = false;
+      res.msg = 'No meta description found.';
+    } else {
+      const descSize = metaDesc.content.replace(/\s/g, '').length;
+      if (descSize < 50) {
+        res.status = false;
+        res.msg = 'Reason: Meta description too short.';
+      } else if (descSize > 150) {
+        res.status = false;
+        res.msg = 'Reason: Meta description too long.';
+      }
+    }
+
+    return res;
+  },
+});
