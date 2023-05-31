@@ -140,10 +140,14 @@ checks.push({
     let badLink;
     // eslint-disable-next-line no-restricted-syntax
     for (const link of links) {
-      // eslint-disable-next-line no-await-in-loop
-      const resp = await fetch(link.href, { method: 'HEAD' });
-      console.log(resp.status);
-      if (!resp.ok) {
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        const resp = await fetch(link.href, { method: 'HEAD' });
+        if (!resp.ok) {
+          badLink = true;
+          break;
+        }
+      } catch (e) {
         badLink = true;
         break;
       }
