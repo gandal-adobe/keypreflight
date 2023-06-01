@@ -80,7 +80,7 @@ checks.push({
 checks.push({
   name: 'Canonical',
   category: 'SEO',
-  exec: (doc) => {
+  exec: async (doc) => {
     const res = {
       status: true,
       msg: 'Canonical reference is valid.',
@@ -88,9 +88,9 @@ checks.push({
     const canon = doc.querySelector("link[rel='canonical']");
     const { href } = canon;
     try {
-      const resp = fetch(href.replace('www.keysight.com', window.location.hostname), { method: 'HEAD' });
+      const resp = await fetch(href.replace('www.keysight.com', window.location.hostname), { method: 'HEAD' });
       if (!resp.ok) {
-        res.status = true;
+        res.status = false;
         res.msg = 'Error with canonical reference.';
       }
       if (resp.ok) {
