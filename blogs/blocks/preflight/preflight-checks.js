@@ -156,6 +156,10 @@ checks.push({
               res.status = true;
               res.msg = 'Link is valid.';
             }
+          })
+          .catch((error) => {
+            res.status = false;
+            res.msg = error;
           });
       }
     } catch (e) {
