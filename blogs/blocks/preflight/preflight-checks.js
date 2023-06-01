@@ -106,7 +106,7 @@ checks.push({
       //   }
       // }
 
-      const response = fetch(href.replace('www.keysight.com', window.location.hostname), { method: 'HEAD' })
+      fetch(href.replace('www.keysight.com', window.location.hostname), { method: 'HEAD' })
         .then((resp) => {
           if (!resp.ok) {
             res.status = false;
@@ -122,7 +122,7 @@ checks.push({
             }
           }
         });
-      console.log(response);
+      // console.log(response);
     } catch (e) {
       res.status = false;
       res.msg = 'Error with canonical reference.';
