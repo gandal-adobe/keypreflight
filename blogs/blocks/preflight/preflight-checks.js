@@ -143,28 +143,33 @@ checks.push({
       msg: 'Links are valid.',
     };
     const links = doc.querySelectorAll('body > main a[href]');
-    try {
-      // eslint-disable-next-line no-restricted-syntax
-      for (const link of links) {
-        const { href } = link;
+
+    let badLink = false;
+    // eslint-disable-next-line no-restricted-syntax
+    for (const link of links) {
+      const { href } = link;
+      try {
         fetch(href.replace('www.keysight.com', window.location.hostname), { method: 'HEAD' })
+          // eslint-disable-next-line no-loop-func
           .then((resp) => {
             if (!resp.ok) {
-              res.status = false;
-              res.msg = 'Link is invalid.';
-            } else {
-              res.status = true;
-              res.msg = 'Link is valid.';
+              badLink = true;
             }
-          })
-          .catch((error) => {
-            throw new Error(error);
           });
+      } catch (e) {
+        badLink = true;
+        break;
       }
-    } catch (e) {
-      res.status = false;
-      res.msg = 'Error with links.';
     }
+
+    if (badLink) {
+      res.status = false;
+      res.msg = 'There are one or more broken links.';
+    } else {
+      res.status = true;
+      res.msg = 'Links are valid.';
+    }
+
     return res;
   },
 });
