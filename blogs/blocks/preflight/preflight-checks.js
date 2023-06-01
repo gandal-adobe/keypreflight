@@ -155,6 +155,12 @@ checks.push({
             if (!resp.ok) {
               badLink = true;
             }
+          })
+          .catch((error) => {
+            console.log('error is', error)
+            res.status = false;
+            res.msg = 'There are seriously broken links.';
+            return res;
           });
       } catch (e) {
         badLink = true;
