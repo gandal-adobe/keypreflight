@@ -80,7 +80,7 @@ checks.push({
 checks.push({
   name: 'Canonical',
   category: 'SEO',
-  exec: async (doc) => {
+  exec: (doc) => {
     const res = {
       status: true,
       msg: 'Canonical reference is valid.',
@@ -88,7 +88,7 @@ checks.push({
     const canon = doc.querySelector("link[rel='canonical']");
     const { href } = canon;
     try {
-      const resp = await fetch(href, { method: 'HEAD' });
+      const resp = fetch(href, { method: 'HEAD' });
       if (!resp.ok) {
         res.status = false;
         res.msg = 'Error with canonical reference.';
