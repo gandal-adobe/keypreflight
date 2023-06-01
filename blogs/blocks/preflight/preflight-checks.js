@@ -155,6 +155,9 @@ checks.push({
             }
             return false;
           });
+        if (badLink) {
+          break;
+        }
       } catch (e) {
         badLink = true;
         break;
