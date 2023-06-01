@@ -149,7 +149,6 @@ checks.push({
     for (const link of links) {
       const { href } = link;
       try {
-        // eslint-disable-next-line no-loop-func
         fetch(href.replace('www.keysight.com', window.location.hostname), { method: 'HEAD' })
           // eslint-disable-next-line no-loop-func
           .then((resp) => {
@@ -165,9 +164,6 @@ checks.push({
           });
       } catch (e) {
         badLink = true;
-      }
-      if (badLink) {
-        break;
       }
     }
 
