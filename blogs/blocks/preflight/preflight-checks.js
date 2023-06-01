@@ -137,45 +137,6 @@ checks.push({
 checks.push({
   name: 'Links',
   category: 'SEO',
-  exec: async (doc) => {
-    const res = {
-      status: true,
-      msg: 'Links are valid.',
-    };
-    const links = doc.querySelectorAll('body > main a[href]');
-
-    let badLink;
-    // eslint-disable-next-line no-restricted-syntax
-    for (const link of links) {
-      try {
-        // eslint-disable-next-line no-await-in-loop
-        const resp = await fetch(link.href, { method: 'HEAD' });
-        if (!resp.ok) {
-          badLink = true;
-          break;
-        }
-      } catch (e) {
-        badLink = true;
-        break;
-      }
-    }
-
-    if (badLink) {
-      res.status = false;
-      res.msg = 'There are one or more broken links.';
-    } else {
-      res.status = true;
-      res.msg = 'Links are valid.';
-    }
-
-    return res;
-  },
-});
-
-
-checks.push({
-  name: 'Links V2',
-  category: 'SEO',
   exec: (doc) => {
     const res = {
       status: true,
@@ -187,7 +148,6 @@ checks.push({
     // eslint-disable-next-line no-restricted-syntax
     for (const link of links) {
       const { href } = link;
-      console.log(href);
       try {
         // eslint-disable-next-line no-loop-func
         fetch(href.replace('www.keysight.com', window.location.hostname), { method: 'HEAD' })
