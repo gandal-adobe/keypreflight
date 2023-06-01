@@ -148,8 +148,10 @@ checks.push({
     // eslint-disable-next-line no-restricted-syntax
     for (const link of links) {
       const { href } = link;
+      console.log(href);
       try {
-        fetch(href.replace('www.keysight.com', window.location.hostname), { method: 'HEAD' })
+        // fetch(href.replace('www.keysight.com', window.location.hostname), { method: 'HEAD' })
+        fetch('https://preflight--keypreflight--gandal-adobe.hlx.page/blogs/tech/nwvs/2023/04/06/copy-of-have-you-put-in-your-10000-hours-of-cyber-security-training', { method: 'HEAD' })
           // eslint-disable-next-line no-loop-func
           .then((resp) => {
             if (!resp.ok) {
@@ -157,7 +159,7 @@ checks.push({
             }
           })
           .catch((error) => {
-            console.log('error is', error)
+            console.log('error is', error);
             res.status = false;
             res.msg = 'There are seriously broken links.';
             return res;
