@@ -164,6 +164,8 @@ checks.push({
           });
       } catch (e) {
         badLink = true;
+      }
+      if (badLink) {
         break;
       }
     }
