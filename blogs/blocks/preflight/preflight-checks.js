@@ -135,7 +135,7 @@ checks.push({
 checks.push({
   name: 'Links',
   category: 'SEO',
-  exec: async (doc) => {
+  exec: (doc) => {
     const res = {
       status: true,
       msg: 'Links are valid.',
@@ -146,8 +146,7 @@ checks.push({
     // eslint-disable-next-line no-restricted-syntax
     for (const link of links) {
       try {
-        // eslint-disable-next-line no-await-in-loop
-        const resp = await fetch(link.href, { method: 'HEAD' });
+        const resp = fetch(link.href, { method: 'HEAD' });
         if (!resp.ok) {
           badLink = true;
           break;
