@@ -158,8 +158,7 @@ checks.push({
             }
           })
           .catch((error) => {
-            res.status = false;
-            res.msg = error;
+            throw new Error(error);
           });
       }
     } catch (e) {
