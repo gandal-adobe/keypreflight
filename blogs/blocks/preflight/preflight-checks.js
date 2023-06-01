@@ -78,7 +78,7 @@ checks.push({
 });
 
 checks.push({
-  name: 'Canonical link',
+  name: 'Canonical',
   category: 'SEO',
   exec: (doc) => {
     const res = {
@@ -87,25 +87,7 @@ checks.push({
     };
     const canon = doc.querySelector("link[rel='canonical']");
     const { href } = canon;
-    // console.log(href);
     try {
-      // eslint-disable-next-line max-len
-      // const resp = await fetch(href.replace('www.keysight.com', window.location.hostname), { method: 'HEAD' });
-      // const resp = fetch('https://preflight--keypreflight--gandal-adobe.hlx.page/blogs/tech/nwvs/2023/04/06/copy-of-have-you-put-in-your-10000-hours-of-cyber-security-training', { method: 'HEAD' });
-      // if (!resp.ok) {
-      //   res.status = false;
-      //   res.msg = 'Error with canonical reference.';
-      // }
-      // if (resp.ok) {
-      //   if (resp.status >= 300 && resp.status <= 308) {
-      //     res.status = false;
-      //     res.msg = 'Canonical reference redirects.';
-      //   } else {
-      //     res.status = true;
-      //     res.msg = 'Canonical referenced is valid.';
-      //   }
-      // }
-
       fetch(href.replace('www.keysight.com', window.location.hostname), { method: 'HEAD' })
         .then((resp) => {
           if (!resp.ok) {
@@ -122,7 +104,6 @@ checks.push({
             }
           }
         });
-      // console.log(response);
     } catch (e) {
       res.status = false;
       res.msg = 'Error with canonical reference.';
@@ -167,12 +148,13 @@ checks.push({
     // eslint-disable-next-line no-restricted-syntax
     for (const link of links) {
       try {
-        // use await fetch tbd
-        const resp = fetch(link.href, { method: 'HEAD' });
-        if (!resp.ok) {
-          badLink = true;
-          break;
-        }
+        badLink = fetch(link.href.replace('www.keysight.com', window.location.hostname), { method: 'HEAD' })
+          .then((resp) => {
+            if (!resp.ok) {
+              return true;
+            }
+            return false;
+          });
       } catch (e) {
         badLink = true;
         break;
