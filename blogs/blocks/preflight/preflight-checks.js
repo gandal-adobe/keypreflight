@@ -137,7 +137,7 @@ checks.push({
 checks.push({
   name: 'Links',
   category: 'SEO',
-  exec: (doc) => {
+  exec: async (doc) => {
     const res = {
       status: true,
       msg: 'Links are valid.',
@@ -148,14 +148,65 @@ checks.push({
     // eslint-disable-next-line no-restricted-syntax
     for (const link of links) {
       try {
-        // use await fetch tbd
-        const resp = fetch(link.href, { method: 'HEAD' });
+        // eslint-disable-next-line no-await-in-loop
+        const resp = await fetch(link.href, { method: 'HEAD' });
         if (!resp.ok) {
           badLink = true;
           break;
         }
       } catch (e) {
         badLink = true;
+        break;
+      }
+    }
+
+    if (badLink) {
+      res.status = false;
+      res.msg = 'There are one or more broken links.';
+    } else {
+      res.status = true;
+      res.msg = 'Links are valid.';
+    }
+
+    return res;
+  },
+});
+
+
+checks.push({
+  name: 'Links V2',
+  category: 'SEO',
+  exec: (doc) => {
+    const res = {
+      status: true,
+      msg: 'Links are valid.',
+    };
+    const links = doc.querySelectorAll('body > main a[href]');
+
+    let badLink = false;
+    // eslint-disable-next-line no-restricted-syntax
+    for (const link of links) {
+      const { href } = link;
+      console.log(href);
+      try {
+        // eslint-disable-next-line no-loop-func
+        fetch(href.replace('www.keysight.com', window.location.hostname), { method: 'HEAD' })
+          // eslint-disable-next-line no-loop-func
+          .then((resp) => {
+            if (!resp.ok) {
+              badLink = true;
+            }
+          })
+          .catch((error) => {
+            console.log('error is', error);
+            res.status = false;
+            res.msg = 'There are seriously broken links.';
+            return res;
+          });
+      } catch (e) {
+        badLink = true;
+      }
+      if (badLink) {
         break;
       }
     }
