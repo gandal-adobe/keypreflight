@@ -78,7 +78,7 @@ checks.push({
 });
 
 checks.push({
-  name: 'Canonical',
+  name: 'Canonical link',
   category: 'SEO',
   exec: async (doc) => {
     const res = {
