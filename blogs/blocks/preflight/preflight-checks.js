@@ -77,37 +77,65 @@ checks.push({
   },
 });
 
+async function validateLink(href, checkRedirect, message) {
+  const result = {
+    valid: true,
+    msg: '',
+  };
+  try {
+    fetch(href.replace('www.keysight.com', window.location.hostname), { method: 'HEAD' })
+      .then((resp) => {
+        if (!resp.ok) {
+          result.valid = false;
+          result.msg = `Error with ${message}.`;
+        }
+        if (resp.ok) {
+          result.status = true;
+          result.msg = `${message} is valid.`;
+          if (checkRedirect) {
+            if (resp.status >= 300 && resp.status <= 308) {
+              result.status = false;
+              result.msg = `${message} redirects.`;
+            }
+          }
+        }
+      });
+  } catch (e) {
+    result.status = false;
+    result.msg = `'Error with ${message}.`;
+  }
+  return result;
+}
+
 checks.push({
   name: 'Canonical',
   category: 'SEO',
   exec: (doc) => {
-    const res = {
-      status: true,
-      msg: 'Canonical reference is valid.',
-    };
     const canon = doc.querySelector("link[rel='canonical']");
     const { href } = canon;
-    try {
-      fetch(href.replace('www.keysight.com', window.location.hostname), { method: 'HEAD' })
-        .then((resp) => {
-          if (!resp.ok) {
-            res.status = false;
-            res.msg = 'Error with canonical reference.';
-          }
-          if (resp.ok) {
-            if (resp.status >= 300 && resp.status <= 308) {
-              res.status = false;
-              res.msg = 'Canonical reference redirects.';
-            } else {
-              res.status = true;
-              res.msg = 'Canonical referenced is valid.';
-            }
-          }
-        });
-    } catch (e) {
-      res.status = false;
-      res.msg = 'Error with canonical reference.';
-    }
+    const res = validateLink(href, true, 'Canonical reference');
+
+    // try {
+    //   fetch(href.replace('www.keysight.com', window.location.hostname), { method: 'HEAD' })
+    //     .then((resp) => {
+    //       if (!resp.ok) {
+    //         res.status = false;
+    //         res.msg = 'Error with canonical reference.';
+    //       }
+    //       if (resp.ok) {
+    //         if (resp.status >= 300 && resp.status <= 308) {
+    //           res.status = false;
+    //           res.msg = 'Canonical reference redirects.';
+    //         } else {
+    //           res.status = true;
+    //           res.msg = 'Canonical referenced is valid.';
+    //         }
+    //       }
+    //     });
+    // } catch (e) {
+    //   res.status = false;
+    //   res.msg = 'Error with canonical reference.';
+    // }
 
     return res;
   },
