@@ -148,8 +148,11 @@ checks.push({
     // eslint-disable-next-line no-restricted-syntax
     for (const link of links) {
       try {
-        badLink = fetch(link.href.replace('www.keysight.com', window.location.hostname), { method: 'HEAD' })
+        // badLink = fetch(link.href.replace('www.keysight.com', window.location.hostname)
+        // , { method: 'HEAD' })
+        badLink = fetch('https://preflight--keypreflight--gandal-adobe.hlx.page/blogs/tech/nwvs/2023/04/06/copy-of-have-you-put-in-your-10000-hours-of-cyber-security-training', { method: 'HEAD' })
           .then((resp) => {
+            console.log(link);
             if (!resp.ok) {
               return true;
             }
