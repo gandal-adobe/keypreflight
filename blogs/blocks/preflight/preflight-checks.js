@@ -80,7 +80,7 @@ checks.push({
 checks.push({
   name: 'Canonical link',
   category: 'SEO',
-  exec: async (doc) => {
+  exec: (doc) => {
     const res = {
       status: true,
       msg: 'Canonical reference is valid.',
@@ -91,7 +91,7 @@ checks.push({
     try {
       // eslint-disable-next-line max-len
       // const resp = await fetch(href.replace('www.keysight.com', window.location.hostname), { method: 'HEAD' });
-      const resp = await fetch('https://preflight--keypreflight--gandal-adobe.hlx.page/blogs/tech/nwvs/2023/04/06/copy-of-have-you-put-in-your-10000-hours-of-cyber-security-training', { method: 'HEAD' });
+      const resp = fetch('https://preflight--keypreflight--gandal-adobe.hlx.page/blogs/tech/nwvs/2023/04/06/copy-of-have-you-put-in-your-10000-hours-of-cyber-security-training', { method: 'HEAD' });
       if (!resp.ok) {
         res.status = false;
         res.msg = 'Error with canonical reference.';
