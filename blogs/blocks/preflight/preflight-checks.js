@@ -86,9 +86,9 @@ checks.push({
       msg: 'Canonical reference is valid.',
     };
     const canon = doc.querySelector("link[rel='canonical']");
-    const { href } = canon.replace('www.keysight.com', window.location.hostname);
+    const { href } = canon;
     try {
-      const resp = fetch(href, { method: 'HEAD' });
+      const resp = fetch(href.replace('www.keysight.com', window.location.hostname), { method: 'HEAD' });
       if (!resp.ok) {
         res.status = true;
         res.msg = 'Error with canonical reference.';
