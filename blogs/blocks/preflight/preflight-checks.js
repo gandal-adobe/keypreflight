@@ -143,38 +143,25 @@ checks.push({
       msg: 'Links are valid.',
     };
     const links = doc.querySelectorAll('body > main a[href]');
-
-    let badLink;
-    // eslint-disable-next-line no-restricted-syntax
-    for (const link of links) {
-      try {
-        // badLink = fetch(link.href.replace('www.keysight.com', window.location.hostname)
-        // , { method: 'HEAD' })
-        badLink = fetch('https://preflight--keypreflight--gandal-adobe.hlx.page/blogs/tech/nwvs/2023/04/06/copy-of-have-you-put-in-your-10000-hours-of-cyber-security-training', { method: 'HEAD' })
+    try {
+      // eslint-disable-next-line no-restricted-syntax
+      for (const link of links) {
+        const { href } = link;
+        fetch(href.replace('www.keysight.com', window.location.hostname), { method: 'HEAD' })
           .then((resp) => {
-            console.log(link);
             if (!resp.ok) {
-              return true;
+              res.status = false;
+              res.msg = 'Link is invalid.';
+            } else {
+              res.status = true;
+              res.msg = 'Link is valid.';
             }
-            return false;
           });
-        if (badLink) {
-          break;
-        }
-      } catch (e) {
-        badLink = true;
-        break;
       }
-    }
-
-    if (badLink) {
+    } catch (e) {
       res.status = false;
-      res.msg = 'There are one or more broken links.';
-    } else {
-      res.status = true;
-      res.msg = 'Links are valid.';
+      res.msg = 'Error with links.';
     }
-
     return res;
   },
 });
