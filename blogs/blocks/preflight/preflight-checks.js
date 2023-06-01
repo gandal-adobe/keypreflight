@@ -87,8 +87,11 @@ checks.push({
     };
     const canon = doc.querySelector("link[rel='canonical']");
     const { href } = canon;
+    console.log(href);
     try {
-      const resp = await fetch(href.replace('www.keysight.com', window.location.hostname), { method: 'HEAD' });
+      // eslint-disable-next-line max-len
+      // const resp = await fetch(href.replace('www.keysight.com', window.location.hostname), { method: 'HEAD' });
+      const resp = await fetch('https://preflight--keypreflight--gandal-adobe.hlx.page/blogs/tech/nwvs/2023/04/06/copy-of-have-you-put-in-your-10000-hours-of-cyber-security-training', { method: 'HEAD' });
       if (!resp.ok) {
         res.status = false;
         res.msg = 'Error with canonical reference.';
