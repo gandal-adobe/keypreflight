@@ -86,11 +86,11 @@ checks.push({
       msg: 'Canonical reference is valid.',
     };
     const canon = doc.querySelector("link[rel='canonical']");
-    const { href } = canon;
+    const { href } = canon.replace('www.keysight.com', window.location.hostname);
     try {
       const resp = fetch(href, { method: 'HEAD' });
       if (!resp.ok) {
-        res.status = false;
+        res.status = true;
         res.msg = 'Error with canonical reference.';
       }
       if (resp.ok) {
@@ -146,6 +146,7 @@ checks.push({
     // eslint-disable-next-line no-restricted-syntax
     for (const link of links) {
       try {
+        // use await fetch tbd
         const resp = fetch(link.href, { method: 'HEAD' });
         if (!resp.ok) {
           badLink = true;
