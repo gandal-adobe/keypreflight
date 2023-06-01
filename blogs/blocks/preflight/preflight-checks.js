@@ -91,20 +91,38 @@ checks.push({
     try {
       // eslint-disable-next-line max-len
       // const resp = await fetch(href.replace('www.keysight.com', window.location.hostname), { method: 'HEAD' });
-      const resp = fetch('https://preflight--keypreflight--gandal-adobe.hlx.page/blogs/tech/nwvs/2023/04/06/copy-of-have-you-put-in-your-10000-hours-of-cyber-security-training', { method: 'HEAD' });
-      if (!resp.ok) {
-        res.status = false;
-        res.msg = 'Error with canonical reference.';
-      }
-      if (resp.ok) {
-        if (resp.status >= 300 && resp.status <= 308) {
-          res.status = false;
-          res.msg = 'Canonical reference redirects.';
-        } else {
-          res.status = true;
-          res.msg = 'Canonical referenced is valid.';
-        }
-      }
+      // const resp = fetch('https://preflight--keypreflight--gandal-adobe.hlx.page/blogs/tech/nwvs/2023/04/06/copy-of-have-you-put-in-your-10000-hours-of-cyber-security-training', { method: 'HEAD' });
+      // if (!resp.ok) {
+      //   res.status = false;
+      //   res.msg = 'Error with canonical reference.';
+      // }
+      // if (resp.ok) {
+      //   if (resp.status >= 300 && resp.status <= 308) {
+      //     res.status = false;
+      //     res.msg = 'Canonical reference redirects.';
+      //   } else {
+      //     res.status = true;
+      //     res.msg = 'Canonical referenced is valid.';
+      //   }
+      // }
+
+      const response = fetch('https://preflight--keypreflight--gandal-adobe.hlx.page/blogs/tech/nwvs/2023/04/06/copy-of-have-you-put-in-your-10000-hours-of-cyber-security-training', { method: 'HEAD' })
+        .then((resp) => {
+          if (!resp.ok) {
+            res.status = false;
+            res.msg = 'Error with canonical reference.';
+          }
+          if (resp.ok) {
+            if (resp.status >= 300 && resp.status <= 308) {
+              res.status = false;
+              res.msg = 'Canonical reference redirects.';
+            } else {
+              res.status = true;
+              res.msg = 'Canonical referenced is valid.';
+            }
+          }
+        });
+      console.log(response);
     } catch (e) {
       res.status = false;
       res.msg = 'Error with canonical reference.';
