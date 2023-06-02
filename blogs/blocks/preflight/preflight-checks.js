@@ -202,7 +202,7 @@ checks.push({
     const imgElements = doc.querySelectorAll('body > main img');
     for (let i = 0; i < imgElements.length; i += 1) {
       const altText = imgElements[i];
-      if (!blocksToExclude.includes(altText.closest('div').className) && altText.alt === "") {
+      if (!blocksToExclude.includes(altText.closest('div').className) && altText.alt === '') {
         invalidAltTextCount += 1;
       }
     }
@@ -288,6 +288,26 @@ checks.push({
         res.status = false;
         res.msg = 'Blog post has no valid read time.';
       }
+    } else {
+      res.status = true;
+      res.msg = 'Page is not a blog post.';
+    }
+
+    return res;
+  },
+});
+
+checks.push({
+  name: 'Ignore',
+  category: 'Blog Post',
+  exec: (doc) => {
+    const res = {
+      status: false,
+      msg: 'Blog post has read time',
+    };
+    if (isBlogPost(doc)) {
+      res.status = false;
+      res.msg = 'Debug scenario';
     } else {
       res.status = true;
       res.msg = 'Page is not a blog post.';
