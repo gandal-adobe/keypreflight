@@ -178,3 +178,31 @@ checks.push({
     return res;
   },
 });
+
+checks.push({
+  name: 'Image Alt-Text',
+  category: 'SEO',
+  exec: (doc) => {
+    const res = {
+      status: true,
+      msg: 'All Images have alt-text.',
+    };
+    let invalidAltTextCount = 0;
+    const imgElements = doc.querySelectorAll('body > main img');
+    for (let i = 0; i < imgElements.length; i += 1) {
+      const altText = imgElements[i].alt;
+      if (altText === '') {
+        invalidAltTextCount += 1;
+      }
+    }
+    if (invalidAltTextCount > 0) {
+      res.status = false;
+      res.msg = '`{invalidAltTextCount}` image(s) have no alt-text.';
+    } else {
+      res.status = true;
+      res.msg = 'Image alt-text are valid.';
+    }
+
+    return res;
+  },
+});
