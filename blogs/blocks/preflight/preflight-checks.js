@@ -218,7 +218,7 @@ checks.push({
       msg: 'Blog post has hero image.',
     };
 
-    if (document.querySelector('meta[name="template"]').content === 'post' && document.querySelector('body > main .hero img').src !== '') {
+    if (doc.querySelector('meta[name="template"]').content === 'post' && doc.querySelector('body > main .hero img').src !== '') {
       res.status = true;
       res.msg = 'Blog post has hero image.';
     } else {
