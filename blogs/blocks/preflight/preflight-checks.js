@@ -258,7 +258,7 @@ checks.push({
       const publishedDateMetaTag = doc.querySelector('meta[name="publication-date"]');
       // if (publishedDateMetaTag && publishedDateMetaTag.content !== ''
       // && publishedDateMetaTag.content !== '<yyyy-mm-dd>') {
-      if (publishedDateMetaTag && !(dateRegex.test(publishedDateMetaTag.content))) {
+      if (publishedDateMetaTag && dateRegex.test(publishedDateMetaTag.content)) {
         res.status = true;
         res.msg = 'Blog post has a valid published date.';
       } else {
@@ -285,7 +285,7 @@ checks.push({
     if (isBlogPost(doc)) {
       const readTimeRegex = /^(0*[1-9]\d*) (min read)$/;
       const readTimeMetaTag = doc.querySelector('meta[name="read-time"]');
-      if (readTimeMetaTag && !(readTimeRegex.test(readTimeMetaTag.content))) {
+      if (readTimeMetaTag && readTimeRegex.test(readTimeMetaTag.content)) {
         res.status = true;
         res.msg = 'Blog post has read time.';
       } else {
