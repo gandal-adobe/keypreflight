@@ -242,24 +242,10 @@ checks.push({
   category: 'Blog Post',
   exec: (doc) => {
     const res = {
-      status: true,
-      msg: 'Blog post has hero image.',
+      status: false,
+      msg: 'Test error message',
     };
-
-    const templateMetaTag = doc.querySelector('meta[name="template"]');
-    if (templateMetaTag && templateMetaTag.content === 'post') {
-      const heroImg = doc.querySelector('body > main .hero img');
-      if (heroImg && heroImg.src !== '') {
-        res.status = true;
-        res.msg = 'Blog post has hero image.';
-      } else {
-        res.status = false;
-        res.msg = 'Blog post has no hero image.';
-      }
-    } else {
-      res.status = true;
-      res.msg = 'Page is not a blog post.';
-    }
+    console.log(doc);
 
     return res;
   },
