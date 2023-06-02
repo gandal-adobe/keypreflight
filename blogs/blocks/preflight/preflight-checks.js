@@ -1,6 +1,15 @@
 // eslint-disable-next-line import/prefer-default-export
 export const checks = [];
 
+function isBlogPost(doc) {
+  // tbd: add if there are variances of blog post pages
+  const templateMetaTag = doc.querySelector('meta[name="template"]');
+  if (templateMetaTag && templateMetaTag.content === 'post') {
+    return true;
+  }
+  return false;
+}
+
 checks.push({
   name: 'Has H1',
   category: 'SEO',
@@ -209,14 +218,6 @@ checks.push({
   },
 });
 
-function isBlogPost(doc) {
-  const templateMetaTag = doc.querySelector('meta[name="template"]');
-  if (templateMetaTag && templateMetaTag.content === 'post') {
-    return true;
-  }
-  return false;
-}
-
 checks.push({
   name: 'Hero Image',
   category: 'Blog Post',
@@ -245,7 +246,7 @@ checks.push({
 });
 
 checks.push({
-  name: 'Published date & Read time',
+  name: 'Published date',
   category: 'Blog Post',
   exec: (doc) => {
     const res = {
@@ -260,6 +261,32 @@ checks.push({
       } else {
         res.status = false;
         res.msg = 'Blog post has no valid published date.';
+      }
+    } else {
+      res.status = true;
+      res.msg = 'Page is not a blog post.';
+    }
+
+    return res;
+  },
+});
+
+checks.push({
+  name: 'Read time',
+  category: 'Blog Post',
+  exec: (doc) => {
+    const res = {
+      status: false,
+      msg: 'Blog post has read time',
+    };
+    if (isBlogPost(doc)) {
+      const readTimeMetaTag = doc.querySelector('meta[name="read-time"]');
+      if (readTimeMetaTag && readTimeMetaTag.content !== '' && !readTimeMetaTag.content.startsWith('<n>')) {
+        res.status = true;
+        res.msg = 'Blog post has read time.';
+      } else {
+        res.status = false;
+        res.msg = 'Blog post has no valid read time.';
       }
     } else {
       res.status = true;
