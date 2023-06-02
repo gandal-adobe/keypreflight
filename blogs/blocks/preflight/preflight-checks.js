@@ -209,3 +209,23 @@ checks.push({
   },
 });
 
+checks.push({
+  name: 'Blog Hero Image',
+  category: 'Blog Post',
+  exec: (doc) => {
+    const res = {
+      status: true,
+      msg: 'Blog post has hero image.',
+    };
+
+    if (document.querySelector('meta[name="template"]').content === 'post' && document.querySelector('body > main .hero img').src !== '') {
+      res.status = true;
+      res.msg = 'Blog post has hero image.';
+    } else {
+      res.status = false;
+      res.msg = 'Blog post has no hero image.';
+    }
+
+    return res;
+  },
+});
