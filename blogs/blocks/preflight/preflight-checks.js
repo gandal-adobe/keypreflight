@@ -256,8 +256,6 @@ checks.push({
     if (isBlogPost(doc)) {
       const dateRegex = /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/;
       const publishedDateMetaTag = doc.querySelector('meta[name="publication-date"]');
-      // if (publishedDateMetaTag && publishedDateMetaTag.content !== ''
-      // && publishedDateMetaTag.content !== '<yyyy-mm-dd>') {
       if (publishedDateMetaTag && dateRegex.test(publishedDateMetaTag.content)) {
         res.status = true;
         res.msg = 'Blog post has a valid published date.';
@@ -295,6 +293,41 @@ checks.push({
     } else {
       res.status = true;
       res.msg = 'Page is not a blog post.';
+    }
+
+    return res;
+  },
+});
+
+checks.push({
+  name: 'Author',
+  category: 'Blog Post',
+  exec: (doc) => {
+    const res = {
+      status: true,
+      msg: 'Author is valid.',
+    };
+    const author = doc.querySelector('.post-sidebar > .author-details > .author-name > a');
+    if (author && author.innerText !== '') {
+      const { href } = author;
+      try {
+        fetch(href, { method: 'HEAD' })
+          .then((resp) => {
+            if (!resp.ok) {
+              res.status = false;
+              res.msg = "Error with the author's page url.";
+            } else {
+              res.status = true;
+              res.msg = 'Author name and url are valid.';
+            }
+          });
+      } catch (e) {
+        res.status = false;
+        res.msg = 'Error with author page url.';
+      }
+    } else {
+      res.status = false;
+      res.msg = 'Author name is missing.';
     }
 
     return res;
