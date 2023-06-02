@@ -209,6 +209,14 @@ checks.push({
   },
 });
 
+function isBlogPost(doc) {
+  const templateMetaTag = doc.querySelector('meta[name="template"]');
+  if (templateMetaTag && templateMetaTag.content === 'post') {
+    return true;
+  }
+  return false;
+}
+
 checks.push({
   name: 'Hero Image',
   category: 'Blog Post',
@@ -218,8 +226,7 @@ checks.push({
       msg: 'Blog post has hero image.',
     };
 
-    const templateMetaTag = doc.querySelector('meta[name="template"]');
-    if (templateMetaTag && templateMetaTag.content === 'post') {
+    if (isBlogPost(doc)) {
       const heroImg = doc.querySelector('body > main .hero img');
       if (heroImg && heroImg.src !== '') {
         res.status = true;
@@ -238,14 +245,26 @@ checks.push({
 });
 
 checks.push({
-  name: 'Publish date & Read time',
+  name: 'Published date & Read time',
   category: 'Blog Post',
   exec: (doc) => {
     const res = {
       status: false,
-      msg: 'Test error message',
+      msg: 'Blog post has published date',
     };
-    console.log(doc);
+    if (isBlogPost(doc)) {
+      const publishedDateMetaTag = doc.querySelector('meta[name="publication-date"]');
+      if (publishedDateMetaTag && publishedDateMetaTag.content !== '' && publishedDateMetaTag.content !== '<yyyy-mm-dd>') {
+        res.status = true;
+        res.msg = 'Blog post has published date.';
+      } else {
+        res.status = false;
+        res.msg = 'Blog post has no valid published date.';
+      }
+    } else {
+      res.status = true;
+      res.msg = 'Page is not a blog post.';
+    }
 
     return res;
   },
