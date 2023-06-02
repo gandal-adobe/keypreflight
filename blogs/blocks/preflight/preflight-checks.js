@@ -309,7 +309,12 @@ checks.push({
     };
     const author = doc.querySelector('.post-sidebar > .author-details > .author-name > a');
     if (author && author.innerText !== '') {
-      const { href } = author;
+      res.status = false;
+      res.msg = "Author's name is missing.";
+      return res;
+    }
+    const { href } = author;
+    if (href !== '' && href !== '#') {
       try {
         fetch(href, { method: 'HEAD' })
           .then((resp) => {
@@ -327,7 +332,7 @@ checks.push({
       }
     } else {
       res.status = false;
-      res.msg = 'Author name is missing.';
+      res.msg = "Author's page url is missing.";
     }
 
     return res;
