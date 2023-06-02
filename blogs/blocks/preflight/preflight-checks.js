@@ -314,7 +314,7 @@ checks.push({
       return res;
     }
     const { href } = author;
-    if (href !== '' && href !== '#') {
+    if (href !== '' && href === `${window.location.href}#`) {
       try {
         fetch(href, { method: 'HEAD' })
           .then((resp) => {
