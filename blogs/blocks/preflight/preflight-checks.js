@@ -308,7 +308,7 @@ checks.push({
       msg: 'Author is valid.',
     };
     const author = doc.querySelector('.post-sidebar > .author-details > .author-name > a');
-    if (author && author.innerText === '') {
+    if (author || author.innerText === '') {
       res.status = false;
       res.msg = "Author's name is missing.";
     } else {
