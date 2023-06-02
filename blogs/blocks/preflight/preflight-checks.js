@@ -210,7 +210,7 @@ checks.push({
 });
 
 checks.push({
-  name: 'Blog Hero Image',
+  name: 'Hero Image',
   category: 'Blog Post',
   exec: (doc) => {
     const res = {
@@ -218,7 +218,8 @@ checks.push({
       msg: 'Blog post has hero image.',
     };
 
-    if (doc.querySelector('meta[name="template"]').content === 'post') {
+    const templateMetaTag = doc.querySelector('meta[name="template"]');
+    if (templateMetaTag && templateMetaTag.content === 'post') {
       const heroImg = doc.querySelector('body > main .hero img');
       if (heroImg && heroImg.src !== '') {
         res.status = true;
