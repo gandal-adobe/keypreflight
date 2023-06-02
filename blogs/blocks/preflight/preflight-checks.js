@@ -197,7 +197,7 @@ checks.push({
     }
     if (invalidAltTextCount > 0) {
       res.status = false;
-      res.msg = '`{invalidAltTextCount}` image(s) have no alt-text.';
+      res.msg = `${invalidAltTextCount } image(s) have no alt-text.`;
     } else {
       res.status = true;
       res.msg = 'Image alt-text are valid.';
