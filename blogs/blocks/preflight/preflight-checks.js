@@ -188,16 +188,18 @@ checks.push({
       msg: 'All Images have alt-text.',
     };
     let invalidAltTextCount = 0;
+    // if img is a child of these blocks then ignore check
+    const blocksToExclude = ['post-card'];
     const imgElements = doc.querySelectorAll('body > main img');
     for (let i = 0; i < imgElements.length; i += 1) {
-      const altText = imgElements[i].alt;
-      if (altText === '') {
+      const altText = imgElements[i];
+      if (!blocksToExclude.includes(altText.closest('div').className) && altText.alt === "") {
         invalidAltTextCount += 1;
       }
     }
     if (invalidAltTextCount > 0) {
       res.status = false;
-      res.msg = `${invalidAltTextCount } image(s) have no alt-text.`;
+      res.msg = `${invalidAltTextCount} image(s) have no alt-text.`;
     } else {
       res.status = true;
       res.msg = 'Image alt-text are valid.';
@@ -206,3 +208,4 @@ checks.push({
     return res;
   },
 });
+
