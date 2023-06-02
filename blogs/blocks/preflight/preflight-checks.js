@@ -218,12 +218,18 @@ checks.push({
       msg: 'Blog post has hero image.',
     };
 
-    if (doc.querySelector('meta[name="template"]').content === 'post' && doc.querySelector('body > main .hero img').src !== '') {
-      res.status = true;
-      res.msg = 'Blog post has hero image.';
+    if (doc.querySelector('meta[name="template"]').content === 'post') {
+      const heroImg = doc.querySelector('body > main .hero img');
+      if (heroImg && heroImg.src !== '') {
+        res.status = true;
+        res.msg = 'Blog post has hero image.';
+      } else {
+        res.status = false;
+        res.msg = 'Blog post has no hero image.';
+      }
     } else {
-      res.status = false;
-      res.msg = 'Blog post has no hero image.';
+      res.status = true;
+      res.msg = 'Page is not a blog post.';
     }
 
     return res;
