@@ -1,3 +1,5 @@
+import { toClassName } from '../../scripts/lib-franklin.js';
+
 // eslint-disable-next-line import/prefer-default-export
 export const checks = [];
 
@@ -167,6 +169,7 @@ checks.push({
           })
           .catch((error) => {
             console.log('error is', error);
+            alert(error);
             res.status = false;
             res.msg = 'There are seriously broken links.';
             return res;
@@ -235,14 +238,12 @@ checks.push({
       // ignore author post side container, preflight, & sectionIDsToIgnore
       if (!element.className.startsWith('author') && !element.innerText.startsWith('Pre-Flight') && !sectionIDsToIgnore.includes(element.id)) {
         headerTags.push(element.nodeName);
-      } else {
-        console.log(`ignore ${element}`);
       }
     }
 
     if (headerTags.length === 1 && headerTags[0] !== 'h1') {
       res.status = false;
-      res.msg = 'There is no H1 tag.';
+      res.msg = 'No H1 on the page.';
     }
 
     for (let i = 1; i < headerTags.length; i += 1) {
@@ -404,6 +405,55 @@ checks.push({
     } else {
       res.status = false;
       res.msg = 'Page is not a blog post.';
+    }
+
+    return res;
+  },
+});
+
+/**
+ * Find the second-level list items and put them into a single array.
+ * @returns {Array} An array of tag strings
+ */
+function getTags(ul) {
+  const tagList = ul.querySelectorAll('ul li ul li');
+  const tagArray = [...tagList];
+  const textArray = tagArray.map((li) => toClassName(li.textContent));
+  return textArray;
+}
+
+checks.push({
+  name: 'Tags',
+  category: 'SEO',
+  exec: (doc) => {
+    const res = {
+      status: true,
+      msg: '',
+    };
+    console.log(doc);
+    // const canon = doc.querySelector("link[rel='canonical']");
+    const href = 'https://main--blogs-keysight--hlxsites.hlx.page/blogs/tags.plain.html';
+    try {
+      fetch(href)
+        .then((resp) => {
+          if (!resp.ok) {
+            res.status = false;
+            res.msg = 'Error with canonical reference.';
+          }
+          if (resp && resp.ok) {
+            const text = resp.text();
+            const tempElement = document.createElement('div');
+            tempElement.innerHTML = text;
+            // Get the root <ul> element
+            const rootUlElement = tempElement.querySelector('ul');
+            // Create the JavaScript array from the nested <ul>
+            const result = getTags(rootUlElement);
+            console.log(result);
+          }
+        });
+    } catch (e) {
+      res.status = false;
+      res.msg = 'Error with tags.';
     }
 
     return res;
