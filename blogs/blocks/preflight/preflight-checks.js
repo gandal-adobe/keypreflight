@@ -452,7 +452,7 @@ checks.push({
               console.log(tagArray);
               articleTags.forEach((tag) => {
                 let invalidTagCount = 0;
-                if (!tagArray.includes(tag)) {
+                if (!tagArray.includes(tag.content)) {
                   invalidTagCount += 1;
                 }
                 if (invalidTagCount > 0) {
