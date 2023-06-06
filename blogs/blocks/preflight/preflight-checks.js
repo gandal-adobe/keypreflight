@@ -1,4 +1,5 @@
 import { toClassName } from '../../scripts/lib-franklin.js';
+import ffetch from '../../scripts/ffetch.js';
 
 // eslint-disable-next-line import/prefer-default-export
 export const checks = [];
@@ -435,13 +436,13 @@ checks.push({
     const href = (`${origin}/blogs/tags.plain.html`);
     try {
       fetch(href)
-        .then((resp) => {
+        .then(async (resp) => {
           if (!resp.ok) {
             res.status = false;
             res.msg = 'Error with canonical reference.';
           }
           if (resp && resp.ok) {
-            const text = resp.text();
+            const text = await resp.text();
             const tempElement = document.createElement('div');
             tempElement.innerHTML = text;
             // Get the root <ul> element
