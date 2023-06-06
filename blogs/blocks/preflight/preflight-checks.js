@@ -219,6 +219,47 @@ checks.push({
 });
 
 checks.push({
+  name: 'Headings',
+  category: 'SEO',
+  exec: (doc) => {
+    const res = {
+      status: true,
+      msg: '',
+    };
+    const sectionIDsToIgnore = ['related-content', 'related-posts'];
+    const headerTags = [];
+    const headerElements = doc.body.querySelectorAll('h1, h2, h3, h4, h5, h6');
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const element of headerElements) {
+      // ignore author post side container, preflight, & sectionIDsToIgnore
+      if (!element.className.startsWith('author') && !element.innerText.startsWith('Pre-Flight') && !sectionIDsToIgnore.includes(element.id)) {
+        headerTags.push(element.nodeName);
+      } else {
+        console.log(`ignore ${element}`);
+      }
+    }
+
+    if (headerTags.length === 1 && headerTags[0] !== 'h1') {
+      res.status = false;
+      res.msg = 'There is no H1 tag.';
+    }
+
+    for (let i = 1; i < headerTags.length; i += 1) {
+      const previousTag = headerTags[i - 1];
+      const currentTag = headerTags[i];
+
+      if (previousTag.charAt(1) > currentTag.charAt(1)) {
+        res.status = false;
+        res.msg = `Header tags are out of order:  ${currentTag} came after ${previousTag}`;
+      }
+    }
+
+    return res;
+  },
+});
+
+checks.push({
   name: 'Hero Image',
   category: 'Blog Post',
   exec: (doc) => {
@@ -343,47 +384,6 @@ checks.push({
     } else {
       res.status = true;
       res.msg = 'Page is not a blog post.';
-    }
-
-    return res;
-  },
-});
-
-checks.push({
-  name: 'Headings',
-  category: 'SEO',
-  exec: (doc) => {
-    const res = {
-      status: true,
-      msg: '',
-    };
-    const sectionIDsToIgnore = ['related-content', 'related-posts'];
-    const headerTags = [];
-    const headerElements = doc.body.querySelectorAll('h1, h2, h3, h4, h5, h6');
-
-    // eslint-disable-next-line no-restricted-syntax
-    for (const element of headerElements) {
-      // ignore author post side container, preflight, & sectionIDsToIgnore
-      if (!element.className.startsWith('author') && !element.innerText.startsWith('Pre-Flight') && !sectionIDsToIgnore.includes(element.id)) {
-        headerTags.push(element.nodeName);
-      } else {
-        console.log(`ignore ${element}`);
-      }
-    }
-
-    if (headerTags.length === 1 && headerTags[0] !== 'h1') {
-      res.status = false;
-      res.msg = 'There is no H1 tag.';
-    }
-
-    for (let i = 1; i < headerTags.length; i += 1) {
-      const previousTag = headerTags[i - 1];
-      const currentTag = headerTags[i];
-
-      if (previousTag.charAt(1) > currentTag.charAt(1)) {
-        res.status = false;
-        res.msg = `Header tags are out of order:  ${currentTag} came after ${previousTag}`;
-      }
     }
 
     return res;
