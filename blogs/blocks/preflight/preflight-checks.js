@@ -418,7 +418,7 @@ checks.push({
 function getTags(ul) {
   const tagList = ul.querySelectorAll('ul li ul li');
   const tagArray = [...tagList];
-  const textArray = tagArray.map((li) => toClassName(li.textContent));
+  const textArray = tagArray.map((li) => (li.textContent));
   return textArray;
 }
 
