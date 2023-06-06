@@ -1,5 +1,4 @@
 import { toClassName } from '../../scripts/lib-franklin.js';
-import ffetch from '../../scripts/ffetch.js';
 
 // eslint-disable-next-line import/prefer-default-export
 export const checks = [];
@@ -431,30 +430,52 @@ checks.push({
       status: true,
       msg: '',
     };
-    console.log(doc);
-    // const canon = doc.querySelector("link[rel='canonical']");
-    const href = (`${origin}/blogs/tags.plain.html`);
-    try {
-      fetch(href)
-        .then(async (resp) => {
-          if (!resp.ok) {
-            res.status = false;
-            res.msg = 'Error with canonical reference.';
-          }
-          if (resp && resp.ok) {
-            const text = await resp.text();
-            const tempElement = document.createElement('div');
-            tempElement.innerHTML = text;
-            // Get the root <ul> element
-            const rootUlElement = tempElement.querySelector('ul');
-            // Create the JavaScript array from the nested <ul>
-            const result = getTags(rootUlElement);
-            console.log(result);
-          }
-        });
-    } catch (e) {
-      res.status = false;
-      res.msg = 'Error with tags.';
+    const articleTags = doc.head.querySelectorAll('meta[property="article:tag"]');
+    if (articleTags.length > 0) {
+      // const canon = doc.querySelector("link[rel='canonical']");
+      const href = (`${origin}/blogs/tags.plain.html`);
+      try {
+        fetch(href)
+          .then(async (resp) => {
+            if (!resp.ok) {
+              res.status = false;
+              res.msg = 'Error with canonical reference.';
+            }
+            if (resp && resp.ok) {
+              const text = await resp.text();
+              const tempElement = document.createElement('div');
+              tempElement.innerHTML = text;
+              // Get the root <ul> element
+              const rootUlElement = tempElement.querySelector('ul');
+              // Create the JavaScript array from the nested <ul>
+              const tagArray = getTags(rootUlElement);
+
+              console.log(tagArray);
+              articleTags.array.forEach((tag) => {
+                let invalidTagCount = 0;
+                if (!tagArray.includes(tag)) {
+                  invalidTagCount += 1;
+                }
+                if (invalidTagCount > 0) {
+                  res.status = false;
+                  res.msg = `${invalidTagCount} invalid tags.`;
+                } else {
+                  res.status = true;
+                  res.msg = 'Tags are valid.';
+                }
+              });
+
+              // for (tag in articleTags) {
+              //   if (!tagArray.includes(tag)) {
+              //     invalidTagCount += 1;
+              //   }
+              // }
+            }
+          });
+      } catch (e) {
+        res.status = false;
+        res.msg = 'Error with tags.';
+      }
     }
 
     return res;
