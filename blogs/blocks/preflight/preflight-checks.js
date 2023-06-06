@@ -169,7 +169,7 @@ checks.push({
           })
           .catch((error) => {
             console.log('error is', error);
-            alert(error);
+            // alert(error);
             res.status = false;
             res.msg = 'There are seriously broken links.';
             return res;
