@@ -432,7 +432,7 @@ checks.push({
     };
     console.log(doc);
     // const canon = doc.querySelector("link[rel='canonical']");
-    const href = 'https://main--blogs-keysight--hlxsites.hlx.page/blogs/tags.plain.html';
+    const href = (`${origin}/blogs/tags.plain.html`);
     try {
       fetch(href)
         .then((resp) => {
