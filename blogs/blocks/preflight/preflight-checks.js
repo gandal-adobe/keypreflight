@@ -435,7 +435,7 @@ checks.push({
       const href = (`${origin}/blogs/tags.plain.html`);
       try {
         fetch(href)
-          .then(async (resp, articleTags) => {
+          .then(async (resp) => {
             if (!resp.ok) {
               res.status = false;
               res.msg = 'Error with canonical reference.';
