@@ -427,8 +427,8 @@ checks.push({
   category: 'SEO',
   exec: (doc) => {
     const res = {
-      status: true,
-      msg: '',
+      status: false,
+      msg: 'No tags found.',
     };
     const articleTags = doc.head.querySelectorAll('meta[property="article:tag"]');
     if (articleTags.length > 0) {
