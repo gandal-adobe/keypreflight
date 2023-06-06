@@ -432,11 +432,10 @@ checks.push({
     };
     const articleTags = doc.head.querySelectorAll('meta[property="article:tag"]');
     if (articleTags.length > 0) {
-      // const canon = doc.querySelector("link[rel='canonical']");
       const href = (`${origin}/blogs/tags.plain.html`);
       try {
         fetch(href)
-          .then(async (resp) => {
+          .then(async (resp, articleTags) => {
             if (!resp.ok) {
               res.status = false;
               res.msg = 'Error with canonical reference.';
@@ -451,7 +450,7 @@ checks.push({
               const tagArray = getTags(rootUlElement);
 
               console.log(tagArray);
-              articleTags.array.forEach((tag) => {
+              articleTags.forEach((tag) => {
                 let invalidTagCount = 0;
                 if (!tagArray.includes(tag)) {
                   invalidTagCount += 1;
