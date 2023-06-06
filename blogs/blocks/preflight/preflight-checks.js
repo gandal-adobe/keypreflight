@@ -464,11 +464,7 @@ checks.push({
                 }
               });
 
-              // for (tag in articleTags) {
-              //   if (!tagArray.includes(tag)) {
-              //     invalidTagCount += 1;
-              //   }
-              // }
+              return res;
             }
           });
       } catch (e) {
