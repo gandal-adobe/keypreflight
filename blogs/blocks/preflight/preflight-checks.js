@@ -177,10 +177,8 @@ checks.push({
             }
           })
           .catch((error) => {
-            console.log('error is', error);
             res.status = false;
-            res.msg = 'There are seriously broken links.';
-            // return res;
+            res.msg = `${error.name}: ${error.message}. Invalid link(s)`;
             // "return res" does not update html anymore at this point hence below code
             [...doc.querySelector('#preflight-category-panel-SEO').children].forEach((item) => {
               if (item.innerText.startsWith('Links')) {
