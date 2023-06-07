@@ -165,30 +165,34 @@ checks.push({
     const links = doc.querySelectorAll('body > main a[href]');
 
     let badLink = false;
+    const sectionClassNamesToIgnore = ['post-sidebar block', 'author-name', 'social'];
     // eslint-disable-next-line no-restricted-syntax
     for (const link of links) {
-      const { href } = link;
-      try {
-        fetch(href.replace('www.keysight.com', window.location.hostname), { method: 'HEAD' })
+      // ignore links that are part of the template
+      if (!sectionClassNamesToIgnore.includes(link.parentElement.className)) {
+        const { href } = link;
+        try {
+          fetch(href.replace('www.keysight.com', window.location.hostname), { method: 'HEAD' })
           // eslint-disable-next-line no-loop-func
-          .then((resp) => {
-            if (!resp.ok) {
-              badLink = true;
-            }
-          })
-          .catch((error) => {
-            res.status = false;
-            res.msg = `${error.name}: ${error.message}. Invalid link(s)`;
-            // "return res" does not update html anymore at this point hence below code
-            [...doc.querySelector('#preflight-category-panel-SEO').children].forEach((item) => {
-              if (item.innerText.startsWith('Links')) {
-                item.className = 'preflight-check preflight-check-failed';
-                item.getElementsByClassName('preflight-check-msg').item(0).innerText = res.msg;
+            .then((resp) => {
+              if (!resp.ok) {
+                badLink = true;
               }
+            })
+            .catch((error) => {
+              res.status = false;
+              res.msg = `${error.name}: ${error.message}. Invalid link(s)`;
+              // "return res" does not update html anymore at this point hence below code
+              [...doc.querySelector('#preflight-category-panel-SEO').children].forEach((item) => {
+                if (item.innerText.startsWith('Links')) {
+                  item.className = 'preflight-check preflight-check-failed';
+                  item.getElementsByClassName('preflight-check-msg').item(0).innerText = res.msg;
+                }
+              });
             });
-          });
-      } catch (e) {
-        badLink = true;
+        } catch (e) {
+          badLink = true;
+        }
       }
     }
 
