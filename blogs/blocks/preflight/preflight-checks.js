@@ -461,7 +461,7 @@ checks.push({
                 }
               });
 
-              // return res; does not update html anymore hence below code
+              // "return res" does not update html anymore at this point hence below code
               [...doc.querySelector('#preflight-category-panel-SEO').children].forEach((item) => {
                 if (item.innerText.startsWith('Tags')) {
                   if (res.status) {
