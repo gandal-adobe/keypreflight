@@ -165,11 +165,11 @@ checks.push({
     const links = doc.querySelectorAll('body > main a[href]');
 
     let badLink = false;
-    const sectionClassNamesToIgnore = ['post-sidebar block', 'author-name', 'social'];
+    const sectionClassNamesToIgnore = ['post-sidebar block', 'author-details', 'social', 'tags-container'];
     // eslint-disable-next-line no-restricted-syntax
     for (const link of links) {
       // ignore links that are part of the template
-      if (!sectionClassNamesToIgnore.includes(link.parentElement.className)) {
+      if (!sectionClassNamesToIgnore.includes(link.parentElement.closest('div').className)) {
         const { href } = link;
         try {
           fetch(href.replace('www.keysight.com', window.location.hostname), { method: 'HEAD' })
