@@ -180,7 +180,7 @@ checks.push({
             console.log('error is', error);
             res.status = false;
             res.msg = 'There are seriously broken links.';
-            return res;
+            // return res;
           });
       } catch (e) {
         badLink = true;
