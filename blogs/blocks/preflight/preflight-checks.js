@@ -451,15 +451,14 @@ checks.push({
                 if (!tagArray.includes(tag.content)) {
                   invalidTagCount += 1;
                 }
-                if (invalidTagCount > 0) {
-                  res.status = false;
-                  res.msg = `${invalidTagCount} invalid tag(s).`;
-                } else {
-                  res.status = true;
-                  res.msg = 'Tags are valid.';
-                }
               });
-
+              if (invalidTagCount > 0) {
+                res.status = false;
+                res.msg = `${invalidTagCount} invalid tag(s).`;
+              } else {
+                res.status = true;
+                res.msg = 'Tags are valid.';
+              }
               // "return res" does not update html anymore at this point hence below code
               [...doc.querySelector('#preflight-category-panel-SEO').children].forEach((item) => {
                 if (item.innerText.startsWith('Tags')) {
