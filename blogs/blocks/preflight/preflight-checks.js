@@ -10,6 +10,17 @@ function isBlogPost(doc) {
   return false;
 }
 
+/**
+ * Find the second-level list items and put them into a single array.
+ * @returns {Array} An array of tag strings
+ */
+function getTags(ul) {
+  const tagList = ul.querySelectorAll('ul li ul li');
+  const tagArray = [...tagList];
+  const textArray = tagArray.map((li) => (li.textContent));
+  return textArray;
+}
+
 checks.push({
   name: 'Has H1',
   category: 'SEO',
@@ -259,6 +270,68 @@ checks.push({
 });
 
 checks.push({
+  name: 'Tags',
+  category: 'SEO',
+  exec: (doc) => {
+    const res = {
+      status: false,
+      msg: 'No tags found.',
+    };
+    const articleTags = doc.head.querySelectorAll('meta[property="article:tag"]');
+    if (articleTags.length > 0) {
+      const href = (`${origin}/blogs/tags.plain.html`);
+      try {
+        fetch(href)
+          .then(async (resp) => {
+            if (!resp.ok) {
+              res.status = false;
+              res.msg = 'Error with canonical reference.';
+            }
+            if (resp && resp.ok) {
+              const text = await resp.text();
+              const tempElement = document.createElement('div');
+              tempElement.innerHTML = text;
+              // Get the root <ul> element
+              const rootUlElement = tempElement.querySelector('ul');
+              // Create the JavaScript array from the nested <ul>
+              const tagArray = getTags(rootUlElement);
+              let invalidTagCount = 0;
+              articleTags.forEach((tag) => {
+                if (!tagArray.includes(tag.content)) {
+                  invalidTagCount += 1;
+                }
+              });
+              if (invalidTagCount > 0) {
+                res.status = false;
+                res.msg = `${invalidTagCount} invalid tag(s).`;
+              } else {
+                res.status = true;
+                res.msg = 'Tags are valid.';
+              }
+              // "return res" does not update html anymore at this point hence below code
+              [...doc.querySelector('#preflight-category-panel-SEO').children].forEach((item) => {
+                if (item.innerText.startsWith('Tags')) {
+                  if (res.status) {
+                    item.className = 'preflight-check preflight-check-success';
+                  } else {
+                    item.className = 'preflight-check preflight-check-failed';
+                  }
+                  item.getElementsByClassName('preflight-check-msg').item(0).innerText = res.msg;
+                }
+              });
+            }
+          });
+      } catch (e) {
+        res.status = false;
+        res.msg = 'Error with tags.';
+      }
+    }
+
+    return res;
+  },
+});
+
+checks.push({
   name: 'Hero Image',
   category: 'Blog Post',
   exec: (doc) => {
@@ -403,79 +476,6 @@ checks.push({
     } else {
       res.status = false;
       res.msg = 'Page is not a blog post.';
-    }
-
-    return res;
-  },
-});
-
-/**
- * Find the second-level list items and put them into a single array.
- * @returns {Array} An array of tag strings
- */
-function getTags(ul) {
-  const tagList = ul.querySelectorAll('ul li ul li');
-  const tagArray = [...tagList];
-  const textArray = tagArray.map((li) => (li.textContent));
-  return textArray;
-}
-
-checks.push({
-  name: 'Tags',
-  category: 'SEO',
-  exec: (doc) => {
-    const res = {
-      status: false,
-      msg: 'No tags found.',
-    };
-    const articleTags = doc.head.querySelectorAll('meta[property="article:tag"]');
-    if (articleTags.length > 0) {
-      const href = (`${origin}/blogs/tags.plain.html`);
-      try {
-        fetch(href)
-          .then(async (resp) => {
-            if (!resp.ok) {
-              res.status = false;
-              res.msg = 'Error with canonical reference.';
-            }
-            if (resp && resp.ok) {
-              const text = await resp.text();
-              const tempElement = document.createElement('div');
-              tempElement.innerHTML = text;
-              // Get the root <ul> element
-              const rootUlElement = tempElement.querySelector('ul');
-              // Create the JavaScript array from the nested <ul>
-              const tagArray = getTags(rootUlElement);
-              let invalidTagCount = 0;
-              articleTags.forEach((tag) => {
-                if (!tagArray.includes(tag.content)) {
-                  invalidTagCount += 1;
-                }
-              });
-              if (invalidTagCount > 0) {
-                res.status = false;
-                res.msg = `${invalidTagCount} invalid tag(s).`;
-              } else {
-                res.status = true;
-                res.msg = 'Tags are valid.';
-              }
-              // "return res" does not update html anymore at this point hence below code
-              [...doc.querySelector('#preflight-category-panel-SEO').children].forEach((item) => {
-                if (item.innerText.startsWith('Tags')) {
-                  if (res.status) {
-                    item.className = 'preflight-check preflight-check-success';
-                  } else {
-                    item.className = 'preflight-check preflight-check-failed';
-                  }
-                  item.getElementsByClassName('preflight-check-msg').item(0).innerText = res.msg;
-                }
-              });
-            }
-          });
-      } catch (e) {
-        res.status = false;
-        res.msg = 'Error with tags.';
-      }
     }
 
     return res;
