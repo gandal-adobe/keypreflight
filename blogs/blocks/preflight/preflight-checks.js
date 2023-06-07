@@ -449,7 +449,6 @@ checks.push({
               // Create the JavaScript array from the nested <ul>
               const tagArray = getTags(rootUlElement);
 
-              console.log(tagArray);
               articleTags.forEach((tag) => {
                 let invalidTagCount = 0;
                 if (!tagArray.includes(tag.content)) {
@@ -464,7 +463,12 @@ checks.push({
                 }
               });
 
-              return res;
+              // return res; does not update html anymore hence below code
+              [...doc.querySelector('#preflight-category-panel-SEO').children].forEach((item) => {
+                if (item.innerText.startsWith('Tags')) {
+                  item.getElementsByClassName('preflight-check-msg').item(0).innerText = res.msg;
+                }
+              });
             }
           });
       } catch (e) {
