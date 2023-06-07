@@ -1,5 +1,3 @@
-import { toClassName } from '../../scripts/lib-franklin.js';
-
 // eslint-disable-next-line import/prefer-default-export
 export const checks = [];
 
@@ -466,6 +464,11 @@ checks.push({
               // return res; does not update html anymore hence below code
               [...doc.querySelector('#preflight-category-panel-SEO').children].forEach((item) => {
                 if (item.innerText.startsWith('Tags')) {
+                  if (res.status) {
+                    item.className = 'preflight-check preflight-check-success';
+                  } else {
+                    item.className = 'preflight-check preflight-check-failed';
+                  }
                   item.getElementsByClassName('preflight-check-msg').item(0).innerText = res.msg;
                 }
               });
