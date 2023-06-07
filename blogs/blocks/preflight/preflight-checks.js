@@ -178,7 +178,6 @@ checks.push({
           })
           .catch((error) => {
             console.log('error is', error);
-            // alert(error);
             res.status = false;
             res.msg = 'There are seriously broken links.';
             return res;
@@ -358,6 +357,7 @@ checks.push({
   },
 });
 
+/*
 checks.push({
   name: 'Published date',
   category: 'Blog Post',
@@ -461,7 +461,9 @@ checks.push({
     return res;
   },
 });
+*/
 
+/*
 checks.push({
   name: 'Ignore',
   category: 'Blog Post',
@@ -481,3 +483,4 @@ checks.push({
     return res;
   },
 });
+*/
