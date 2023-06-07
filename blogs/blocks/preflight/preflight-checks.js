@@ -446,15 +446,14 @@ checks.push({
               const rootUlElement = tempElement.querySelector('ul');
               // Create the JavaScript array from the nested <ul>
               const tagArray = getTags(rootUlElement);
-
+              let invalidTagCount = 0;
               articleTags.forEach((tag) => {
-                let invalidTagCount = 0;
                 if (!tagArray.includes(tag.content)) {
                   invalidTagCount += 1;
                 }
                 if (invalidTagCount > 0) {
                   res.status = false;
-                  res.msg = `${invalidTagCount} invalid tags.`;
+                  res.msg = `${invalidTagCount} invalid tag(s).`;
                 } else {
                   res.status = true;
                   res.msg = 'Tags are valid.';
