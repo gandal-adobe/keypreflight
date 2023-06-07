@@ -261,7 +261,7 @@ checks.push({
 
       if (previousTag.charAt(1) > currentTag.charAt(1)) {
         res.status = false;
-        res.msg = `Header tags are out of order:  ${currentTag} came after ${previousTag}`;
+        res.msg = `Heading tags are out of order:  ${currentTag} came after ${previousTag}`;
       }
     }
 
