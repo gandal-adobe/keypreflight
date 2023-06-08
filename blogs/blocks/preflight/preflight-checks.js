@@ -354,16 +354,17 @@ checks.push({
                 res.msg = 'Tags are valid.';
               }
               // "return res" does not update html anymore at this point hence below code
-              [...doc.querySelector('#preflight-category-panel-SEO').children].forEach((item) => {
-                if (item.innerText.startsWith('Tags')) {
-                  if (res.status) {
-                    item.className = 'preflight-check preflight-check-success';
-                  } else {
-                    item.className = 'preflight-check preflight-check-failed';
-                  }
-                  item.getElementsByClassName('preflight-check-msg').item(0).innerText = res.msg;
-                }
-              });
+              updateModalResult(doc, res, [0, 0]);
+              // [...doc.querySelector('#preflight-category-panel-SEO').children].forEach((item) => {
+              //   if (item.innerText.startsWith('Tags')) {
+              //     if (res.status) {
+              //       item.className = 'preflight-check preflight-check-success';
+              //     } else {
+              //       item.className = 'preflight-check preflight-check-failed';
+              //     }
+              //     item.getElementsByClassName('preflight-check-msg').item(0).innerText = res.msg;
+              //   }
+              // });
             }
           });
       } catch (e) {
