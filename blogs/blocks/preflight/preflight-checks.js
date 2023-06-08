@@ -181,6 +181,9 @@ checks.push({
     const links = doc.querySelectorAll('body > main a[href]');
 
     let badLink = false;
+    let http404;
+    let typeErrors;
+
     const sectionClassNamesToIgnore = ['post-sidebar block', 'author-details', 'social', 'tags-container'];
     // eslint-disable-next-line no-restricted-syntax
     for (const link of links) {
@@ -192,17 +195,19 @@ checks.push({
           // eslint-disable-next-line no-loop-func
             .then((resp) => {
               if (!resp.ok) {
+                http404 += 1;
                 console.log(`404 ${href}`);
                 res.status = false;
-                res.msg += 'Invalid link(s). 404 error.';
+                res.msg = `Invalid link(s). ${http404} 404 error(s).`;
                 updateModalResult(doc, res);
               }
             })
             // eslint-disable-next-line no-loop-func
             .catch((error) => {
+              typeErrors += 1;
               console.log(error);
               res.status = false;
-              res.msg += `Invalid link(s). ${error.name}: ${error.message}.`;
+              res.msg = `Invalid link(s). ${typeErrors} Type error(s).`;
               // "return res" does not update html anymore at this point hence below code
               updateModalResult(doc, res);
             });
