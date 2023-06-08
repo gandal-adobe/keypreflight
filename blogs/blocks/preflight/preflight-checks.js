@@ -194,7 +194,7 @@ checks.push({
               if (!resp.ok) {
                 console.log(`404 ${href}`);
                 res.status = false;
-                res.msg = 'Invalid link(s). 404 error.';
+                res.msg += 'Invalid link(s). 404 error.';
                 updateModalResult(doc, res);
               }
             })
@@ -202,7 +202,7 @@ checks.push({
             .catch((error) => {
               console.log(error);
               res.status = false;
-              res.msg = `Invalid link(s). ${error.name}: ${error.message}.`;
+              res.msg += `Invalid link(s). ${error.name}: ${error.message}.`;
               // "return res" does not update html anymore at this point hence below code
               updateModalResult(doc, res);
             });
