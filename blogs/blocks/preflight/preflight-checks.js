@@ -1,6 +1,10 @@
 // eslint-disable-next-line import/prefer-default-export
 export const checks = [];
 
+/**
+ * Check if page is a Blog post using meta tag.
+ * @returns {boolean} true if blog post page
+ */
 function isBlogPost(doc) {
   // tbd: add if there are variances of blog post pages
   const templateMetaTag = doc.querySelector('meta[name="template"]');
@@ -19,6 +23,34 @@ function getTags(ul) {
   const tagArray = [...tagList];
   const textArray = tagArray.map((li) => (li.textContent));
   return textArray;
+}
+
+/**
+ * Updates the modal item validation entry. Called by fetch callback promise.
+ * 'Tags' & 'Links' string needs to match name property of checks[] array
+ */
+function updateModalResult(doc, res, check, arrURLSummaryErrors) {
+  [...doc.querySelector('#preflight-category-panel-seo').children].forEach((item) => {
+    if (check === 'Tags' && item.innerText.startsWith('Tags')) {
+      if (res.status) {
+        item.className = 'preflight-check preflight-check-success';
+      } else {
+        item.className = 'preflight-check preflight-check-failed';
+      }
+      item.getElementsByClassName('preflight-check-msg').item(0).innerText = res.msg;
+    } else if (check === 'Links' && item.innerText.startsWith('Links')) {
+      // this only gets executed on errors (res.status=false)
+      item.className = 'preflight-check preflight-check-failed';
+      let msg = 'Invalid Links:';
+      if (arrURLSummaryErrors.length === 2 && arrURLSummaryErrors[0] > 0) {
+        msg += ` ${arrURLSummaryErrors[0]} http-404 error(s).`;
+      }
+      if (arrURLSummaryErrors.length === 2 && arrURLSummaryErrors[1] > 0) {
+        msg += ` ${arrURLSummaryErrors[1]} url(s) cannot be validated.`;
+      }
+      item.getElementsByClassName('preflight-check-msg').item(0).innerText = msg;
+    }
+  });
 }
 
 checks.push({
@@ -154,46 +186,6 @@ checks.push({
   },
 });
 
-// function updateModalResult(doc, res) {
-//   [...doc.querySelector('#preflight-category-panel-SEO').children].forEach((item) => {
-//     if (item.innerText.startsWith('Tags')) {
-//       if (res.status) {
-//         item.className = 'preflight-check preflight-check-success';
-//       } else {
-//         item.className = 'preflight-check preflight-check-failed';
-//       }
-//       item.getElementsByClassName('preflight-check-msg').item(0).innerText = res.msg;
-//     } else if (item.innerText.startsWith('Links')) {
-//       item.className = 'preflight-check preflight-check-failed';
-//       item.getElementsByClassName('preflight-check-msg').item(0).innerText = res.msg;
-//     }
-//   });
-// }
-
-function updateModalResult(doc, res, check, arrURLSummaryErrors) {
-  [...doc.querySelector('#preflight-category-panel-SEO').children].forEach((item) => {
-    if (check === 'Tags' && item.innerText.startsWith('Tags')) {
-      if (res.status) {
-        item.className = 'preflight-check preflight-check-success';
-      } else {
-        item.className = 'preflight-check preflight-check-failed';
-      }
-      item.getElementsByClassName('preflight-check-msg').item(0).innerText = res.msg;
-    } else if (check === 'Links' && item.innerText.startsWith('Links')) {
-      // only gets executed on errors (res.status=false)
-      item.className = 'preflight-check preflight-check-failed';
-      let msg = 'Invalid Links:';
-      if (arrURLSummaryErrors.length === 2 && arrURLSummaryErrors[0] > 0) {
-        msg += ` ${arrURLSummaryErrors[0]} http-404 error(s).`;
-      }
-      if (arrURLSummaryErrors.length === 2 && arrURLSummaryErrors[1] > 0) {
-        msg += ` ${arrURLSummaryErrors[1]} url(s) cannot be validated.`;
-      }
-      item.getElementsByClassName('preflight-check-msg').item(0).innerText = msg;
-    }
-  });
-}
-
 checks.push({
   name: 'Links',
   category: 'SEO',
@@ -203,7 +195,7 @@ checks.push({
       msg: 'Links are valid.',
     };
     const links = doc.querySelectorAll('body > main a[href]');
-    // use array for less code. arr[0] for 404 count; arr[1] for fetch exception error count
+    // using array for less code. arr[0] for 404 count; arr[1] for fetch exception error count
     const arrURLSummaryErrors = [0, 0];
 
     const sectionClassNamesToIgnore = ['post-sidebar block', 'author-details', 'social', 'tags-container'];
@@ -218,7 +210,6 @@ checks.push({
             .then((resp) => {
               if (!resp.ok) {
                 arrURLSummaryErrors[0] += 1;
-                console.log(`404 ${href}`);
                 res.status = false;
                 res.msg = 'HTTP-404 error(s).';
                 updateModalResult(doc, res, 'Links', arrURLSummaryErrors);
@@ -227,26 +218,16 @@ checks.push({
             // eslint-disable-next-line no-loop-func
             .catch((error) => {
               arrURLSummaryErrors[1] += 1;
-              console.log(error);
               res.status = false;
-              res.msg = 'Invalid link(s). Type error(s).';
+              res.msg = `Invalid link(s). ${error}`;
               // "return res" does not update html anymore at this point hence below code
               updateModalResult(doc, res, 'Links', arrURLSummaryErrors);
             });
         } catch (e) {
-          null; // not needed unless other scenarios come up
+          console.log(e); // not needed unless other scenarios come up
         }
       }
     }
-
-    // if (badLink) {
-    //   res.status = false;
-    //   res.msg = 'There are one or more broken links.';
-    // } else {
-    //   res.status = true;
-    //   res.msg = 'Links are valid.';
-    // }
-
     return res;
   },
 });
@@ -361,16 +342,6 @@ checks.push({
               }
               // "return res" does not update html anymore at this point hence below code
               updateModalResult(doc, res, 'Tags', [0, 0]);
-              // [...doc.querySelector('#preflight-category-panel-SEO').children].forEach((item) => {
-              //   if (item.innerText.startsWith('Tags')) {
-              //     if (res.status) {
-              //       item.className = 'preflight-check preflight-check-success';
-              //     } else {
-              //       item.className = 'preflight-check preflight-check-failed';
-              //     }
-              //     item.getElementsByClassName('preflight-check-msg').item(0).innerText = res.msg;
-              //   }
-              // });
             }
           });
       } catch (e) {
