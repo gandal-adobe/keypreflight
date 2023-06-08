@@ -182,7 +182,7 @@ function updateModalResult(doc, res, arrURLSummaryErrors) {
     } else if (item.innerText.startsWith('Links')) {
       // only gets executed on errors (res.status=false)
       item.className = 'preflight-check preflight-check-failed';
-      const msg = `Invalid Links. ${arrURLSummaryErrors[0]} http404 error(s);${arrURLSummaryErrors[1]} cannot be validated.`;
+      const msg = `Invalid Links. ${arrURLSummaryErrors[0]} http404 error(s); ${arrURLSummaryErrors[1]} url(s) cannot be validated.`;
       item.getElementsByClassName('preflight-check-msg').item(0).innerText = msg;
     }
   });
@@ -197,11 +197,8 @@ checks.push({
       msg: 'Links are valid.',
     };
     const links = doc.querySelectorAll('body > main a[href]');
-
-    const badLink = false;
-    // arr[0] for 404 count; arr[1] for fetch exception error count
+    // use array for less code. arr[0] for 404 count; arr[1] for fetch exception error count
     const arrURLSummaryErrors = [0, 0];
-    const typeErrors = 0;
 
     const sectionClassNamesToIgnore = ['post-sidebar block', 'author-details', 'social', 'tags-container'];
     // eslint-disable-next-line no-restricted-syntax
