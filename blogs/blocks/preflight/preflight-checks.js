@@ -181,8 +181,8 @@ checks.push({
     const links = doc.querySelectorAll('body > main a[href]');
 
     let badLink = false;
-    let http404;
-    let typeErrors;
+    let http404 = 0;
+    let typeErrors = 0;
 
     const sectionClassNamesToIgnore = ['post-sidebar block', 'author-details', 'social', 'tags-container'];
     // eslint-disable-next-line no-restricted-syntax
