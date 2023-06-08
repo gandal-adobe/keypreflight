@@ -184,7 +184,7 @@ function updateModalResult(doc, res, check, arrURLSummaryErrors) {
       item.className = 'preflight-check preflight-check-failed';
       let msg = 'Invalid Links:';
       if (arrURLSummaryErrors.length === 2 && arrURLSummaryErrors[0] > 0) {
-        msg += ` ${arrURLSummaryErrors[0]} http-404 error(s);`;
+        msg += ` ${arrURLSummaryErrors[0]} http-404 error(s).`;
       }
       if (arrURLSummaryErrors.length === 2 && arrURLSummaryErrors[1] > 0) {
         msg += ` ${arrURLSummaryErrors[1]} url(s) cannot be validated.`;
@@ -209,8 +209,8 @@ checks.push({
     const sectionClassNamesToIgnore = ['post-sidebar block', 'author-details', 'social', 'tags-container'];
     // eslint-disable-next-line no-restricted-syntax
     for (const link of links) {
-      // ignore links that are part of the template
-      if (!sectionClassNamesToIgnore.includes(link.parentElement.closest('div').className)) {
+      // ignore links that are part of the template and only validate keysight/blogs/ urls
+      if (link.href.includes('/blogs/') && !sectionClassNamesToIgnore.includes(link.parentElement.closest('div').className)) {
         const { href } = link;
         try {
           fetch(href.replace('www.keysight.com', window.location.hostname), { method: 'HEAD' })
