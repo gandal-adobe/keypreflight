@@ -154,7 +154,23 @@ checks.push({
   },
 });
 
-function updateModalResult(doc, res) {
+// function updateModalResult(doc, res) {
+//   [...doc.querySelector('#preflight-category-panel-SEO').children].forEach((item) => {
+//     if (item.innerText.startsWith('Tags')) {
+//       if (res.status) {
+//         item.className = 'preflight-check preflight-check-success';
+//       } else {
+//         item.className = 'preflight-check preflight-check-failed';
+//       }
+//       item.getElementsByClassName('preflight-check-msg').item(0).innerText = res.msg;
+//     } else if (item.innerText.startsWith('Links')) {
+//       item.className = 'preflight-check preflight-check-failed';
+//       item.getElementsByClassName('preflight-check-msg').item(0).innerText = res.msg;
+//     }
+//   });
+// }
+
+function updateModalResult(doc, res, arrURLSummaryErrors) {
   [...doc.querySelector('#preflight-category-panel-SEO').children].forEach((item) => {
     if (item.innerText.startsWith('Tags')) {
       if (res.status) {
@@ -164,8 +180,10 @@ function updateModalResult(doc, res) {
       }
       item.getElementsByClassName('preflight-check-msg').item(0).innerText = res.msg;
     } else if (item.innerText.startsWith('Links')) {
+      // only gets executed on errors (res.status=false)
       item.className = 'preflight-check preflight-check-failed';
-      item.getElementsByClassName('preflight-check-msg').item(0).innerText = res.msg;
+      const msg = 'Invalid Links. ' + arrURLSummaryErrors[0] + ' http404 error(s);' + arrURLSummaryErrors[1] + ' cannot be validated.';
+      item.getElementsByClassName('preflight-check-msg').item(0).innerText = msg;
     }
   });
 }
@@ -181,7 +199,8 @@ checks.push({
     const links = doc.querySelectorAll('body > main a[href]');
 
     let badLink = false;
-    let http404 = 0;
+    // arr[0] for 404 count; arr[1] for fetch exception error count
+    let arrURLSummaryErrors = [0, 0];
     let typeErrors = 0;
 
     const sectionClassNamesToIgnore = ['post-sidebar block', 'author-details', 'social', 'tags-container'];
@@ -195,37 +214,33 @@ checks.push({
           // eslint-disable-next-line no-loop-func
             .then((resp) => {
               if (!resp.ok) {
-                http404 += 1;
+                arrURLSummaryErrors(0) += 1;
                 console.log(`404 ${href}`);
                 res.status = false;
-                res.msg += `Invalid link(s). ${http404} HTTP-404 error(s).`;
-                updateModalResult(doc, res);
+                res.msg = 'HTTP-404 error(s).';
+                updateModalResult(doc, res, arrURLSummaryErrors);
               }
             })
             // eslint-disable-next-line no-loop-func
             .catch((error) => {
-              typeErrors += 1;
+              arrURLSummaryErrors(1) += 1;
               console.log(error);
               res.status = false;
-              res.msg += `Invalid link(s). ${typeErrors} Type error(s).`;
+              res.msg = 'Invalid link(s). Type error(s).';
               // "return res" does not update html anymore at this point hence below code
-              updateModalResult(doc, res);
+              updateModalResult(doc, res, arrURLSummaryErrors);
             });
-        } catch (e) {
-          console.log('badLink:');
-          console.log(e);
-          badLink = true;
-        }
+        } 
       }
     }
 
-    if (badLink) {
-      res.status = false;
-      res.msg = 'There are one or more broken links.';
-    } else {
-      res.status = true;
-      res.msg = 'Links are valid.';
-    }
+    // if (badLink) {
+    //   res.status = false;
+    //   res.msg = 'There are one or more broken links.';
+    // } else {
+    //   res.status = true;
+    //   res.msg = 'Links are valid.';
+    // }
 
     return res;
   },
