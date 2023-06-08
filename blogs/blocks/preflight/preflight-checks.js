@@ -230,6 +230,8 @@ checks.push({
               // "return res" does not update html anymore at this point hence below code
               updateModalResult(doc, res, arrURLSummaryErrors);
             });
+        } catch (e) {
+          null; // not needed unless other scenarios come up
         } 
       }
     }
