@@ -198,7 +198,7 @@ checks.push({
                 http404 += 1;
                 console.log(`404 ${href}`);
                 res.status = false;
-                res.msg = `Invalid link(s). ${http404} 404 error(s).`;
+                res.msg += `Invalid link(s). ${http404} HTTP-404 error(s).`;
                 updateModalResult(doc, res);
               }
             })
@@ -207,7 +207,7 @@ checks.push({
               typeErrors += 1;
               console.log(error);
               res.status = false;
-              res.msg = `Invalid link(s). ${typeErrors} Type error(s).`;
+              res.msg += `Invalid link(s). ${typeErrors} Type error(s).`;
               // "return res" does not update html anymore at this point hence below code
               updateModalResult(doc, res);
             });
