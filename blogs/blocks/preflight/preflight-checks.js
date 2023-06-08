@@ -30,7 +30,7 @@ function getTags(ul) {
  * 'Tags' & 'Links' string needs to match name property of checks[] array
  */
 function updateModalResult(doc, res, check, arrURLSummaryErrors) {
-  [...doc.querySelector('#preflight-category-panel-seo').children].forEach((item) => {
+  [...doc.querySelector('#preflight-category-panel-SEO').children].forEach((item) => {
     if (check === 'Tags' && item.innerText.startsWith('Tags')) {
       if (res.status) {
         item.className = 'preflight-check preflight-check-success';
