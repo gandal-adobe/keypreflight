@@ -183,10 +183,10 @@ function updateModalResult(doc, res, check, arrURLSummaryErrors) {
       // only gets executed on errors (res.status=false)
       item.className = 'preflight-check preflight-check-failed';
       let msg = 'Invalid Links:';
-      if (arrURLSummaryErrors[0] > 0) {
+      if (arrURLSummaryErrors.length === 2 && arrURLSummaryErrors[0] > 0) {
         msg += ` ${arrURLSummaryErrors[0]} http-404 error(s);`;
       }
-      if (arrURLSummaryErrors[1] > 0) {
+      if (arrURLSummaryErrors.length === 2 && arrURLSummaryErrors[1] > 0) {
         msg += ` ${arrURLSummaryErrors[1]} url(s) cannot be validated.`;
       }
       item.getElementsByClassName('preflight-check-msg').item(0).innerText = msg;
