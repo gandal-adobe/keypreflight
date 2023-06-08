@@ -170,16 +170,16 @@ checks.push({
 //   });
 // }
 
-function updateModalResult(doc, res, arrURLSummaryErrors) {
+function updateModalResult(doc, res, check, arrURLSummaryErrors) {
   [...doc.querySelector('#preflight-category-panel-SEO').children].forEach((item) => {
-    if (item.innerText.startsWith('Tags')) {
+    if (check === 'Tags' && item.innerText.startsWith('Tags')) {
       if (res.status) {
         item.className = 'preflight-check preflight-check-success';
       } else {
         item.className = 'preflight-check preflight-check-failed';
       }
       item.getElementsByClassName('preflight-check-msg').item(0).innerText = res.msg;
-    } else if (item.innerText.startsWith('Links')) {
+    } else if (check === 'Links' && item.innerText.startsWith('Links')) {
       // only gets executed on errors (res.status=false)
       item.className = 'preflight-check preflight-check-failed';
       const msg = `Invalid Links. ${arrURLSummaryErrors[0]} http404 error(s); ${arrURLSummaryErrors[1]} url(s) cannot be validated.`;
@@ -215,7 +215,7 @@ checks.push({
                 console.log(`404 ${href}`);
                 res.status = false;
                 res.msg = 'HTTP-404 error(s).';
-                updateModalResult(doc, res, arrURLSummaryErrors);
+                updateModalResult(doc, res, 'Links', arrURLSummaryErrors);
               }
             })
             // eslint-disable-next-line no-loop-func
@@ -225,7 +225,7 @@ checks.push({
               res.status = false;
               res.msg = 'Invalid link(s). Type error(s).';
               // "return res" does not update html anymore at this point hence below code
-              updateModalResult(doc, res, arrURLSummaryErrors);
+              updateModalResult(doc, res, 'Links', arrURLSummaryErrors);
             });
         } catch (e) {
           null; // not needed unless other scenarios come up
@@ -354,7 +354,7 @@ checks.push({
                 res.msg = 'Tags are valid.';
               }
               // "return res" does not update html anymore at this point hence below code
-              updateModalResult(doc, res, [0, 0]);
+              updateModalResult(doc, res, 'Tags', [0, 0]);
               // [...doc.querySelector('#preflight-category-panel-SEO').children].forEach((item) => {
               //   if (item.innerText.startsWith('Tags')) {
               //     if (res.status) {
