@@ -182,7 +182,7 @@ function updateModalResult(doc, res, arrURLSummaryErrors) {
     } else if (item.innerText.startsWith('Links')) {
       // only gets executed on errors (res.status=false)
       item.className = 'preflight-check preflight-check-failed';
-      const msg = 'Invalid Links. ' + arrURLSummaryErrors[0] + ' http404 error(s);' + arrURLSummaryErrors[1] + ' cannot be validated.';
+      const msg = `Invalid Links. ${arrURLSummaryErrors[0]} http404 error(s);${arrURLSummaryErrors[1]} cannot be validated.`;
       item.getElementsByClassName('preflight-check-msg').item(0).innerText = msg;
     }
   });
@@ -198,10 +198,10 @@ checks.push({
     };
     const links = doc.querySelectorAll('body > main a[href]');
 
-    let badLink = false;
+    const badLink = false;
     // arr[0] for 404 count; arr[1] for fetch exception error count
-    let arrURLSummaryErrors = [0, 0];
-    let typeErrors = 0;
+    const arrURLSummaryErrors = [0, 0];
+    const typeErrors = 0;
 
     const sectionClassNamesToIgnore = ['post-sidebar block', 'author-details', 'social', 'tags-container'];
     // eslint-disable-next-line no-restricted-syntax
@@ -214,7 +214,7 @@ checks.push({
           // eslint-disable-next-line no-loop-func
             .then((resp) => {
               if (!resp.ok) {
-                arrURLSummaryErrors(0) += 1;
+                arrURLSummaryErrors[0] += 1;
                 console.log(`404 ${href}`);
                 res.status = false;
                 res.msg = 'HTTP-404 error(s).';
@@ -223,7 +223,7 @@ checks.push({
             })
             // eslint-disable-next-line no-loop-func
             .catch((error) => {
-              arrURLSummaryErrors(1) += 1;
+              arrURLSummaryErrors[1] += 1;
               console.log(error);
               res.status = false;
               res.msg = 'Invalid link(s). Type error(s).';
@@ -232,7 +232,7 @@ checks.push({
             });
         } catch (e) {
           null; // not needed unless other scenarios come up
-        } 
+        }
       }
     }
 
