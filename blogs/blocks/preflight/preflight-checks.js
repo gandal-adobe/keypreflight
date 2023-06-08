@@ -154,6 +154,22 @@ checks.push({
   },
 });
 
+function updateModalResult(doc, res) {
+  [...doc.querySelector('#preflight-category-panel-SEO').children].forEach((item) => {
+    if (item.innerText.startsWith('Tags')) {
+      if (res.status) {
+        item.className = 'preflight-check preflight-check-success';
+      } else {
+        item.className = 'preflight-check preflight-check-failed';
+      }
+      item.getElementsByClassName('preflight-check-msg').item(0).innerText = res.msg;
+    } else if (item.innerText.startsWith('Links')) {
+      item.className = 'preflight-check preflight-check-failed';
+      item.getElementsByClassName('preflight-check-msg').item(0).innerText = res.msg;
+    }
+  });
+}
+
 checks.push({
   name: 'Links',
   category: 'SEO',
@@ -176,20 +192,19 @@ checks.push({
           // eslint-disable-next-line no-loop-func
             .then((resp) => {
               if (!resp.ok) {
-                badLink = true;
+                console.log(`404 ${href}`);
+                res.status = false;
+                res.msg = 'Invalid link(s). 404 error.';
+                updateModalResult(doc, res);
               }
             })
+            // eslint-disable-next-line no-loop-func
             .catch((error) => {
               console.log(error);
               res.status = false;
-              res.msg = `${error.name}: ${error.message}. Invalid link(s)`;
+              res.msg = `Invalid link(s). ${error.name}: ${error.message}.`;
               // "return res" does not update html anymore at this point hence below code
-              [...doc.querySelector('#preflight-category-panel-SEO').children].forEach((item) => {
-                if (item.innerText.startsWith('Links')) {
-                  item.className = 'preflight-check preflight-check-failed';
-                  item.getElementsByClassName('preflight-check-msg').item(0).innerText = res.msg;
-                }
-              });
+              updateModalResult(doc, res);
             });
         } catch (e) {
           console.log('badLink:');
